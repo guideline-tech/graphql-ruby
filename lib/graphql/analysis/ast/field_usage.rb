@@ -48,7 +48,7 @@ module GraphQL
               argument_type = argument_type.of_type
             end
 
-            if argument_type.kind.input_object?
+            if argument_type.kind.input_object? && argument.value.respond_to?(:arguments) # Skip if value is not a GraphQL::Schema::InputObject
               extract_deprecated_arguments(argument.value.arguments.argument_values) # rubocop:disable Development/ContextIsPassedCop -- runtime args instance
             elsif argument_type.kind.enum?
               extract_deprecated_enum_value(argument_type, argument.value)
