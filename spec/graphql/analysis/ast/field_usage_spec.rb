@@ -254,6 +254,17 @@ describe GraphQL::Analysis::AST::FieldUsage do
     end
   end
 
+  describe "mutation with deprecated arguments with prepared values does not break" do
+    let(:query_string) {%|
+      mutation {
+        pushValue(preparedTestInput: { deprecatedDate: "2020-10-10" })
+      }
+    |}
+
+    it "does not keeps track of nested deprecated arguments" do
+      assert_equal [], result[:used_deprecated_arguments]
+    end
+  end
 
   describe "when an argument prepare raises a GraphQL::ExecutionError" do
     class ArgumentErrorFieldUsageSchema < GraphQL::Schema
