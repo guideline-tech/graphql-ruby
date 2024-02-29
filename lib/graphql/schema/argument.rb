@@ -261,8 +261,11 @@ module GraphQL
         end
 
         loaded_value = nil
+        original_value = nil
         coerced_value = begin
-          type.coerce_input(value, context)
+          type.coerce_input(value, context) do |input_obj_instance|
+            original_value = input_obj_instance
+          end
         rescue StandardError => err
           context.schema.handle_or_reraise(context, err)
         end
@@ -290,6 +293,7 @@ module GraphQL
             # TODO code smell to access such a deeply-nested constant in a distant module
             argument_values[arg_key] = GraphQL::Execution::Interpreter::ArgumentValue.new(
               value: resolved_loaded_value,
+              original_value: original_value,
               definition: self,
               default_used: default_used,
             )

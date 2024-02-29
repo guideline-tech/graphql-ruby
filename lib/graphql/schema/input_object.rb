@@ -216,6 +216,7 @@ module GraphQL
               raise resolved_arguments
             else
               input_obj_instance = self.new(resolved_arguments, ruby_kwargs: resolved_arguments.keyword_arguments, context: ctx, defaults_used: nil)
+              yield input_obj_instance if block_given?
               input_obj_instance.prepare
             end
           end
